@@ -62,6 +62,11 @@ def __main__():
         if l[1] not in label_dict:
             label_dict[l[1]] = len(label_dict)
         hiera[label_dict[l[0]]].add(label_dict[l[1]])
+    for l in doc_labels:
+        assert len(l) == 3
+        if l[2] not in label_dict:
+            label_dict[l[2]] = len(label_dict)
+        hiera[label_dict[l[1]]].add(label_dict[l[2]])
     value_dict = {i: v for v, i in label_dict.items()}
     torch.save(value_dict, 'value_dict.pt')
     torch.save(hiera, 'slot.pt')
@@ -78,15 +83,15 @@ def __main__():
 
     with open('FoodSafety_train.json', 'w') as f:
         for i in train:
-            line = json.dumps({'token': df[i], 'label': [label_dict[i] for i in doc_labels[i]]})
+            line = json.dumps({'token': df.iloc[i].to_dict(), 'label': [label_dict[j] for j in doc_labels[i]]})
             f.write(line + '\n')
     with open('FoodSafety_dev.json', 'w') as f:
         for i in val:
-            line = json.dumps({'token': df[i], 'label': [label_dict[i] for i in doc_labels[i]]})
+            line = json.dumps({'token': df.iloc[i].to_dict(), 'label': [label_dict[j] for j in doc_labels[i]]})
             f.write(line + '\n')
     with open('FoodSafety_test.json', 'w') as f:
         for i in test:
-            line = json.dumps({'token': df[i], 'label': [label_dict[i] for i in doc_labels[i]]})
+            line = json.dumps({'token': df.iloc[i].to_dict(), 'label': [label_dict[j] for j in doc_labels[i]]})
             f.write(line + '\n')
 
 
